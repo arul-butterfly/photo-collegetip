@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CollegeTips Premium Gallery</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d0d0d;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.8rem;
+      color: #ff00cc;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px #ff00ccaa;
+    }
+
+    .tags {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .tags button {
+      padding: 0.6rem 1.4rem;
+      border: 2px solid #ff00cc;
+      background: transparent;
+      color: #ff00cc;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tags button:hover,
+    .tags button.active {
+      background: #ff00cc;
+      color: #fff;
+      box-shadow: 0 0 10px #ff00cc;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .photo {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 0, 204, 0.2);
+      transition: transform 0.3s ease;
+      background: #222;
+      cursor: pointer;
+    }
+
+    .photo:hover {
+      transform: scale(1.03);
+    }
+
+    .photo img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .lightbox {
+      position: fixed;
+      display: none;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80vh;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #ff00cc;
+    }
+
+    .lightbox span {
+      margin-top: 1rem;
+      color: #ff00cc;
+      font-size: 1.2rem;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .caption {
+        font-size: 0.85rem;
+      }
+    }
+    body {
+  background: #111;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.layout-switcher {
+  margin-bottom: 20px;
+}
+.layout-switcher button {
+  background: #ff00cc;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  margin: 0 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.layout-switcher button:hover {
+  background: #ff66e0;
+}
+
+/* Gallery base style */
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+#gallery img {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+/* Layout: Masonry */
+.masonry {
+  column-count: 3;
+  column-gap: 10px;
+}
+.masonry img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* Layout: Carousel */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+.carousel img {
+  scroll-snap-align: center;
+  min-width: 80%;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+/* Layout: Slideshow */
+.slideshow {
+  position: relative;
+  height: 500px;
+}
+.slideshow img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  opacity: 0;
+  transition: opacity 1s;
+  max-height: 100%;
+}
+.slideshow img.active {
+  opacity: 1;
+}
+
+/* Layout: Polaroid */
+.polaroid {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.polaroid img {
+  position: absolute;
+  width: 200px;
+  transform: rotate(calc(10deg - 20deg * var(--rand)));
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+/* 🌗 Dark/Light Toggle Styles */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.toggle-label {
+  color: white;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+/* Toggle switch design */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #555;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #ff00cc;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* 🌞 Light Theme Styles */
+body.light {
+  background: #fff;
+  color: #111;
+}
+body.light .toggle-label {
+  color: #111;
+}
+body.light .layout-switcher button {
+  background: #ddd;
+  color: #111;
+}
+body.light .layout-switcher button:hover {
+  background: #ccc;
+}
+
+  </style>
+</head>
+<body>
+    <!-- 🌗 Dark/Light Mode Toggle -->
+<div class="theme-toggle">
+    <label class="switch">
+      <input type="checkbox" id="themeSwitch">
+      <span class="slider round"></span>
+    </label>
+    <span class="toggle-label">Toggle Theme</span>
+  </div>
+  
+
+<h1>CollegeTips premium Photo Gallery</h1>
+
+<div class="tags">
+    <button class="active" onclick="filterTag('all', this)">All</button>
+    <button onclick="filterTag('team', this)">🤝 Team</button>
+    <button onclick="filterTag('creative', this)">🎨 Creative</button>
+    <button onclick="filterTag('fun', this)">🥳 Fun</button>
+    <button onclick="filterTag('bts', this)">🎥 BTS</button>
+    <button onclick="filterTag('events', this)">🎊 Events</button>
+    <button onclick="filterTag('celebration', this)">🎂 Celebration</button>
+    <button onclick="filterTag('learning', this)">📚 Learning</button>
+    <button onclick="filterTag('innovation', this)">💡 Innovation</button>
+    <button onclick="filterTag('chill', this)">😎 Chill</button>
+    <button onclick="filterTag('spotlight', this)">🎤 Spotlight</button>
+  </div>
+  
+  <div class="gallery">
+    <div class="photo" data-tag="team">
+      <img src="./image/lf1.webp" alt="Team Vibes">
+      <div class="caption">Team Vibes</div>
+    </div>
+    <div class="photo" data-tag="team">
+      <img src="./image/birthday-main-image.webp" alt="Team Meeting">
+      <div class="caption">Team Meeting</div>
+    </div>
+    <div class="photo" data-tag="creative">
+      <img src="./image/workshop.webp" alt="Creative Campaign">
+      <div class="caption">Creative Campaign</div>
+    </div>
+    <div class="photo" data-tag="fun">
+      <img src="./image/play.webp" alt="Work Hard, Play Hard">
+      <div class="caption">Work Hard, Play Hard</div>
+    </div>
+    <div class="photo" data-tag="bts">
+      <img src="./image/behind.webp" alt="Behind the Scenes">
+      <div class="caption">Behind the Scenes</div>
+    </div>
+    <div class="photo" data-tag="events">
+      <img src="./image/wedding.webp" alt="CollegeTips Fest">
+      <div class="caption">CollegeTips Fest</div>
+    </div>
+    <div class="photo" data-tag="celebration">
+      <img src="./image/lf1.webp" alt="Birthday Bash">
+      <div class="caption">Birthday Bash</div>
+    </div>
+    <div class="photo" data-tag="learning">
+      <img src="./image/work.webp" alt="Workshop Vibes">
+      <div class="caption">Workshop Vibes</div>
+    </div>
+    <div class="photo" data-tag="innovation">
+      <img src="./image/start.webp" alt="Startup Brainstorm">
+      <div class="caption">Startup Brainstorm</div>
+    </div>
+    <div class="photo" data-tag="chill">
+      <img src="./image/break.webp" alt="Break Time!">
+      <div class="caption">Break Time!</div>
+    </div>
+    <div class="photo" data-tag="spotlight">
+      <img src="./image/stra.webp" alt="Rising Star">
+      <div class="caption">Rising Star</div>
+    </div>
+  </div>
+  <div class="layout-switcher">
+    <button onclick="setLayout('masonry')">🧱 Masonry</button>
+    <button onclick="setLayout('carousel')">🔄 Carousel</button>
+    <button onclick="setLayout('slideshow')">🖼️ Slideshow</button>
+    <button onclick="setLayout('polaroid')">📸 Polaroid</button>
+  </div>
+  
+  <div id="gallery" class="masonry">
+    <!-- Add your images here -->
+    <img src="./image/251.webp" alt="img1">
+    <img src="./image/start.webp" alt="img2">
+    <img src="./image/break.webp" alt="img3">
+    <img src="./image/wedding.webp" alt="img4">
+    <!-- add as many images as needed -->
+  </div>
+  
+
+
+<div class="lightbox" id="lightbox">
+  <img id="lightbox-img" src="">
+  <span onclick="document.getElementById('lightbox').classList.remove('active')">Close</span>
+</div>
+
+<script>
+  const filterButtons = document.querySelectorAll('.tags button');
+  const photos = document.querySelectorAll('.photo');
+
+  function filterTag(tag, btn) {
+    filterButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    photos.forEach(photo => {
+      if (tag === 'all' || photo.dataset.tag === tag) {
+        photo.style.display = 'block';
+      } else {
+        photo.style.display = 'none';
+      }
+    });
+  }
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+
+  document.querySelectorAll('.photo img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('active');
+    });
+  });
+  let currentSlide = 0;
+let slideshowInterval;
+
+function setLayout(type) {
+  const gallery = document.getElementById("gallery");
+  gallery.className = type;
+
+  // Reset styles
+  const images = gallery.querySelectorAll("img");
+  images.forEach(img => {
+    img.classList.remove("active");
+    img.style = '';
+  });
+
+  // Slideshow logic
+  if (type === "slideshow") {
+    currentSlide = 0;
+    images[currentSlide].classList.add("active");
+    slideshowInterval = setInterval(() => {
+      images[currentSlide].classList.remove("active");
+      currentSlide = (currentSlide + 1) % images.length;
+      images[currentSlide].classList.add("active");
+    }, 3000);
+  } else {
+    clearInterval(slideshowInterval);
+  }
+
+  // Polaroid random rotation
+  if (type === "polaroid") {
+    images.forEach(img => {
+      const rand = Math.random();
+      img.style.setProperty('--rand', rand);
+      img.style.top = `${Math.random() * 200}px`;
+      img.style.left = `${Math.random() * 300}px`;
+    });
+  }
+}
+// 🌗 Theme Toggle Handler
+document.addEventListener("DOMContentLoaded", () => {
+  const themeToggle = document.getElementById("themeSwitch");
+
+  // Check saved theme
+  if (localStorage.getItem("theme") === "light") {
+    document.body.classList.add("light");
+    themeToggle.checked = true;
+  }
+
+  themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("light");
+    const theme = document.body.classList.contains("light") ? "light" : "dark";
+    localStorage.setItem("theme", theme);
+  });
+});
+
+</script>
+
+</body>
+</html>
